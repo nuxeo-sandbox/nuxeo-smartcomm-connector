@@ -1,0 +1,1 @@
+nuxeo-smartcomm-connector
