@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
-<component name="org.nuxeo.labs.operation.getsmartcommtemplatelist" version="1.0">
+<component name="org.nuxeo.smartcomm.operations" version="1.0">
 
-    <extension point="operations" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
-        <operation class="org.nuxeo.labs.GetSmartCommTemplateList"/>
-    </extension>
+  <extension point="operations" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
+    <operation class="org.nuxeo.smartcomm.operations.GetSmartCommTemplateList" />
+  </extension>
 
 </component>
