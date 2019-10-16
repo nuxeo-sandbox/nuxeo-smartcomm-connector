@@ -16,6 +16,25 @@ smartcom.auth.password=YOUR_PWD
 smartcom.auth.tokenServerUrl=THE_TOKEN_SERVER_URL
 ```
 
+Optionnal parameters:
+
+* Default value is hard coded to 1800 (30 mn):
+
+        smartcom.auth.tokenDUrationSeconds=THE_DURATION_IN_SECONDS`
+
+* The Data Model Res ID (used to fetch template list):
+
+        smartcom.dataModelResID=THE_DATA_MODEL_RES_ID`
+
+* The project ID, to get the draft from:
+
+        smartcom.projectId=THE_PROJECT_ID`
+
+* The Batch Config Res ID, to generate a draft form a temmplate ID:
+
+        smartcomm.batchConfigResId=THE_BATCH_CONF_RES_ID`
+
+
 ##### Getting a List of Templates
 
 The operation that fetches the list of templates accepts an optional parameter, the Data Model Resource Id. if it is not passed, the plug)in will read the default value in the configuration:
@@ -56,6 +75,19 @@ Usage is done via the following operations:
   ... etc ...
 ]
 ```
+
+
+##### `SmartComm.GenerateSmartCommTemplateDraft`
+* Return a XML string, the draft template containing the template parameters.
+* Parameter: `templateId`
+  * String, required
+  * The ID of the template to use. After a call to `SmartComm.GetSmartCommTemplateList`you can use the `resourceId ` value.
+* Parameters `projectId` and `batchConfigResId` are optional. if not passed, they are read from the configuration (see above)
+* Template parameters:
+  * **WARNING**: For first, quick implementation, these are specific to Nuxeo-SmartComm test environment. If we don't have time to do it, we recommand passing a map, or aproperty list, etc. instead
+  * All these are string, opational, parameters
+  * `templateParamClaimNumber`, `templateParamClaimantName`, `templateParamLossDate` and `templateParamPolicyNumber`.   
+
 
 
 ## Support

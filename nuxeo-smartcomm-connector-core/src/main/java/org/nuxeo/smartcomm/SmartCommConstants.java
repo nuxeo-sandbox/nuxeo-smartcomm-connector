@@ -36,6 +36,12 @@ public class SmartCommConstants {
 
     public static final String PARAM_NAME_TOKEN_SERVER_URL = "smartcom.auth.tokenServerUrl";
 
+    public static final String PARAM_NAME_TOKEN_DURATION_SECONDS = "smartcom.auth.tokenDUrationSeconds";
+
     public static final String PARAM_NAME_DATA_MODEL_RES_ID = "smartcom.dataModelResID";
+
+    public static final String PARAM_NAME_PROJECT_ID = "smartcom.projectId";
+
+    public static final String PARAM_NAME_BATCH_CONFIG_RES_ID = "smartcomm.batchConfigResId";
 
 }

@@ -9,10 +9,10 @@ import org.nuxeo.ecm.automation.core.annotations.Param;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.smartcomm.SmartCommService;
 
-/**
- *
- */
-@Operation(id = GetSmartCommTemplateList.ID, category = Constants.CAT_SERVICES, label = "Get Template List from SmartComm", description = "Return the template list available for the dataModelResID. If dataModelResID is not passed, uses the smartcom.dataModelResID configuraiton parameter. Return a JSON string, array of templates")
+@Operation(id = GetSmartCommTemplateList.ID, category = Constants.CAT_SERVICES, label = "Get Template List from SmartComm", description = ""
+        + "Return the template list available for the dataModelResID."
+        + " If dataModelResID is not passed, uses the smartcom.dataModelResID configuraiton parameter."
+        + " Return a JSON string, array of templates")
 public class GetSmartCommTemplateList {
 
     public static final String ID = "SmartComm.GetSmartCommTemplateList";
