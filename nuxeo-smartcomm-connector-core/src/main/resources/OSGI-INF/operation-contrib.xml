@@ -4,6 +4,7 @@
   <extension point="operations" target="org.nuxeo.ecm.core.operation.OperationServiceComponent">
     <operation class="org.nuxeo.smartcomm.operations.GetSmartCommTemplateList" />
     <operation class="org.nuxeo.smartcomm.operations.GenerateSmartCommTemplateDraft" />
+    <operation class="org.nuxeo.smartcomm.operations.FinalizeSmartCommTemplate" />
   </extension>
 
 </component>

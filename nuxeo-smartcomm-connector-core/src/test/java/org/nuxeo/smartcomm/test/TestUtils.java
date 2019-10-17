@@ -19,12 +19,21 @@
 package org.nuxeo.smartcomm.test;
 
 import static org.apache.commons.lang3.StringUtils.isBlank;
+import static org.junit.Assert.assertNotNull;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.nuxeo.runtime.api.Framework;
 import org.nuxeo.smartcomm.SmartCommConstants;
+import org.nuxeo.smartcomm.SmartCommService;
 
 /**
- * @since TODO
+ * Centralization of utilities
+ * 
+ * @since 10.10
  */
 public class TestUtils {
 
@@ -45,6 +54,32 @@ public class TestUtils {
 
         return true;
 
+    }
+    
+    static public String getFirstTemplateId(SmartCommService smartCommService) throws Exception {
+        
+        JSONArray list = smartCommService.getTemplateList(null);
+        assertNotNull(list);
+        
+        if(list.length() < 1) {
+            return null;
+        }
+        
+        JSONObject template = (JSONObject) list.get(0);
+        String templateId = template.getString("resourceId");
+        
+        return templateId;
+    }
+    
+    // IMPORTANT: This is very specific to Nuxeo-SmartComm demo environment
+    static public Map<String, String> buildTemplateParameters() {
+        HashMap<String, String> templateParams = new HashMap<String, String>();
+        templateParams.put("insuranceDemo_claimNumber", "CLM-1234");
+        templateParams.put("insuranceDemo_policyNumber", "POL-1234");
+        templateParams.put("insuranceDemo_claimantName", "John Moon");
+        templateParams.put("insuranceDemo_lossDate", "2019-10-15");
+        
+        return templateParams;
     }
 
 }

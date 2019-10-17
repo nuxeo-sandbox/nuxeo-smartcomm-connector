@@ -34,6 +34,9 @@ import org.json.JSONObject;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.oauth.client.OAuthClientFilter;
 
+/*
+ * This class has a lot of room for improvement mainly in terms of factorization (done quickly, a lot of code is a copy/paste of a previous one)
+ */
 public class SmartCommServiceImpl extends DefaultComponent implements SmartCommService {
 
     @SuppressWarnings("unused")
@@ -284,7 +287,6 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
             json.put("projectId", intValue);
             intValue = Integer.valueOf(batchConfigResId);
             json.put("batchConfigResId", intValue);
-            json.put("transactionRange", "1");
 
             json.put("transactionRange", "1");
             String transactionData = "<?xml version=\"1.0\" encoding=\"utf-8\"?>";
@@ -335,6 +337,117 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
         }
 
         return xml;
+    }
+
+    @Override
+    public String finalizeDraft(String xmlDraft, String projectId) {
+
+        String html = null;
+
+        projectId = checkConfigParameter(projectId, SmartCommConstants.PARAM_NAME_PROJECT_ID);
+        String token = getToken();
+
+        HttpClient client = HttpClients.custom()
+                                       .setDefaultRequestConfig(
+                                               RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
+                                       .build();
+
+        HttpPost post = new HttpPost(
+                "https://na10-sb.smartcommunications.cloud/one/oauth2/api/v6/job/finalizeDraft?includeDocumentData=true");
+
+        post.addHeader("Accept", "application/xml"); // application/json or application/xml
+        post.addHeader("Content-Type", "application/json"); // application/json or application/xml
+        post.addHeader("Authorization", "Bearer " + token);
+        post.addHeader("Cache-Control", "no-cache");
+        post.addHeader("Accept-Encoding", "gzip, deflate");
+        post.addHeader("Connection", "keep-alive");
+
+        try {
+            JSONObject json = new JSONObject();
+            // projectId must be integer
+            int intValue = Integer.valueOf(projectId);
+            json.put("projectId", intValue);
+
+            /*
+             * printFormat (integer, optional): The final format of the draft document. List of Possible values:
+             * '1' Postscript
+             * '3' PDF
+             * '4' PCL
+             * '6' XML
+             * '8' AFP
+             * '10' TIF
+             * '11' PNG
+             */
+            // json.put("printFormat", 6);
+
+            String xmlBase64 = new String(Base64.encodeBase64(xmlDraft.getBytes()));
+            json.put("reviewCaseData", xmlBase64);
+
+            StringEntity params = new StringEntity(json.toString());
+            post.setEntity(params);
+
+            HttpResponse response = client.execute(post);
+
+            int code = response.getStatusLine().getStatusCode();
+            if (code != 200) {
+                throw new NuxeoException("finalizeDraft from SmartComm for projectId" + projectId + " => Return Code: "
+                        + response.getStatusLine().getStatusCode());
+            }
+
+            String fullXml = "" + EntityUtils.toString(response.getEntity());
+            // System.out.print("\n" + fullXml);// Extract the XML only
+            JSONObject obj = org.json.XML.toJSONObject(fullXml);
+            /*
+             * The result is:
+             * {
+             * "documentEnvelope": {
+             * "numberTransactions": "1",
+             * "envelopes": {
+             * "envelope": {
+             * "masterChannel": {
+             * "data": "THE BASE64 HTML==",
+             * "userKeys": {
+             * },
+             * "channelName": "HTML Email",
+             * "channelType": "1",
+             * "mimeType": "text/html",
+             * "documentName": "Please Call",
+             * "channelId": "1"
+             * },
+             * "slaveChannels": {
+             * }
+             * }
+             * },
+             * "exceptions": {
+             * }
+             * }
+             * }
+             * => We just need the "data" part, so going to documentEnvelope/envelopes/envelope/masterChannel/data
+             */
+            System.out.print("\n" + obj.toString(4));
+            JSONObject documentEnvelope = (JSONObject) obj.get("documentEnvelope");
+            JSONObject envelopes = (JSONObject) documentEnvelope.getJSONObject("envelopes");
+            JSONObject envelope = (JSONObject) envelopes.getJSONObject("envelope");
+            JSONObject masterChannel = (JSONObject) envelope.getJSONObject("masterChannel");
+            // Sanity check
+            String mimeType = masterChannel.getString("mimeType");
+            if (mimeType == null || !mimeType.equals("text/html")) {
+                throw new NuxeoException("finalizeDraft did not return text/html but " + mimeType);
+            }
+            // Get the html
+            String base64Data = masterChannel.getString("data");
+            byte[] byteArray = Base64.decodeBase64(base64Data.getBytes());
+            html = new String(byteArray);
+
+        } catch (IOException | JSONException e) {
+            throw new NuxeoException("Error getting the template draft", e);
+        } finally {
+            if (post != null) {
+                post.releaseConnection();
+            }
+        }
+
+        return html;
     }
 
 }

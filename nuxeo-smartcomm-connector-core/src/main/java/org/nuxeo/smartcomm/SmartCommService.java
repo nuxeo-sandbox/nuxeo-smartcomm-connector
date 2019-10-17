@@ -34,5 +34,7 @@ public interface SmartCommService {
      * @since 10.10
      */
     String getTemplateDraft(String templateId, Map<String, String> templateParams, String projectId, String batchConfigResId);
+    
+    String finalizeDraft(String xmlDraft, String projectId);
 
 }

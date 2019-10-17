@@ -21,6 +21,7 @@ package org.nuxeo.smartcomm.test;
 
 import com.google.inject.Inject;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.json.XML;
@@ -38,6 +39,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
+import java.util.Map;
 
 @RunWith(FeaturesRunner.class)
 @Features({ PlatformFeature.class })
@@ -84,7 +86,7 @@ public class TestSmartCommService {
         JSONArray list = smartCommService.getTemplateList(null);
         assertNotNull(list);
 
-        //System.out.print(list.toString(2));
+        // System.out.print(list.toString(2));
 
     }
 
@@ -104,29 +106,38 @@ public class TestSmartCommService {
 
         Assume.assumeTrue("No configuration parameters found: No tests", TestUtils.hasConfigParameters());
 
-        JSONArray list = smartCommService.getTemplateList(null);
-        assertNotNull(list);
-        
-        Assume.assumeTrue("No template found => No testGetTemplateDraft test", list.length() > 0);
-        
-        JSONObject template = (JSONObject) list.get(0);
-        String templateId = template.getString("resourceId");
-        
-        HashMap<String, String> templateParams = new HashMap<String, String>();
-        templateParams.put("insuranceDemo_claimNumber", "CLM-1234");
-        templateParams.put("insuranceDemo_policyNumber", "POL-1234");
-        templateParams.put("insuranceDemo_claimantName", "John Moon");
-        templateParams.put("insuranceDemo_lossDate", "2019-10-15");
+        String templateId = TestUtils.getFirstTemplateId(smartCommService);
+        Assume.assumeTrue("No template found => No testGetTemplateDraft test", StringUtils.isNotBlank(templateId));
+
+        Map<String, String> templateParams = TestUtils.buildTemplateParameters();
 
         String xml = smartCommService.getTemplateDraft(templateId, templateParams, null, null);
 
         assertNotNull(xml);
-        //System.out.print("\n" + xml);
-        
+        // System.out.print("\n" + xml);
+
         // Should parse the xml etc. Just check we have our values for now
         assertTrue(xml.indexOf("CLM-1234") > -1);
         assertTrue(xml.indexOf("John Moon") > -1);
         assertTrue(xml.indexOf("2019-10-15") > -1);
+    }
+
+    @Test
+    public void testFinalizeTemplate() throws Exception {
+
+        Assume.assumeTrue("No configuration parameters found: No tests", TestUtils.hasConfigParameters());
+
+        String templateId = TestUtils.getFirstTemplateId(smartCommService);
+        Assume.assumeTrue("No template found => No testGetTemplateDraft test", StringUtils.isNotBlank(templateId));
+
+        // Build a draft
+        Map<String, String> templateParams = TestUtils.buildTemplateParameters();
+        String xml = smartCommService.getTemplateDraft(templateId, templateParams, null, null);
+        assertNotNull(xml);
+
+        String html = smartCommService.finalizeDraft(xml, null);
+        assertNotNull(html);
+
     }
 
 }
