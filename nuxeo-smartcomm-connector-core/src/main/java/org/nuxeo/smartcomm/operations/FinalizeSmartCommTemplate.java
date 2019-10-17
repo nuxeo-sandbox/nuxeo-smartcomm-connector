@@ -1,8 +1,5 @@
 package org.nuxeo.smartcomm.operations;
 
-import java.util.HashMap;
-
-import org.apache.commons.lang3.StringUtils;
 import org.nuxeo.ecm.automation.core.Constants;
 import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.core.annotations.Operation;
@@ -12,7 +9,7 @@ import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.smartcomm.SmartCommService;
 
 /**
- * TODO: Change hard coded parameters to a list (property list, JSON, whatever)
+ * 
  */
 @Operation(id = FinalizeSmartCommTemplate.ID, category = Constants.CAT_SERVICES, label = "Finalize SmartComm Template", description = ""
         + "Finalize the template passed as XML in templateXML (likely generated via SmartComm.GenerateSmartCommTemplateDraft)"

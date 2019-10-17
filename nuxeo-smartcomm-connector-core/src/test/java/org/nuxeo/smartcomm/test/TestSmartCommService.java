@@ -23,8 +23,6 @@ import com.google.inject.Inject;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
-import org.json.JSONObject;
-import org.json.XML;
 import org.junit.Assume;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,7 +36,6 @@ import org.nuxeo.smartcomm.SmartCommService;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @RunWith(FeaturesRunner.class)
@@ -63,15 +60,17 @@ public class TestSmartCommService {
     public void testServiceIsLoaded() {
 
         Assume.assumeTrue("No configuration parameters found: No tests", TestUtils.hasConfigParameters());
+        System.out.println("Running testServiceIsLoaded");
 
         assertNotNull(smartCommService);
     }
 
     @Test
     public void testCanGetToken() {
-
+        
         Assume.assumeTrue("No configuration parameters found: No tests", TestUtils.hasConfigParameters());
-
+        System.out.println("Running testCanGetToken");
+        
         String token = smartCommService.getToken();
         assertNotNull(token);
     }
@@ -80,6 +79,7 @@ public class TestSmartCommService {
     public void testGetTemplateList() throws Exception {
 
         Assume.assumeTrue("No configuration parameters found: No tests", TestUtils.hasConfigParameters());
+        System.out.println("Running testGetTemplateList");
 
         assertNotNull(smartCommService);
 
@@ -105,6 +105,7 @@ public class TestSmartCommService {
     public void testGetTemplateDraft() throws Exception {
 
         Assume.assumeTrue("No configuration parameters found: No tests", TestUtils.hasConfigParameters());
+        System.out.println("Running testGetTemplateDraft");
 
         String templateId = TestUtils.getFirstTemplateId(smartCommService);
         Assume.assumeTrue("No template found => No testGetTemplateDraft test", StringUtils.isNotBlank(templateId));
@@ -126,6 +127,7 @@ public class TestSmartCommService {
     public void testFinalizeTemplate() throws Exception {
 
         Assume.assumeTrue("No configuration parameters found: No tests", TestUtils.hasConfigParameters());
+        System.out.println("Running testFinalizeTemplate");
 
         String templateId = TestUtils.getFirstTemplateId(smartCommService);
         Assume.assumeTrue("No template found => No testGetTemplateDraft test", StringUtils.isNotBlank(templateId));

@@ -31,9 +31,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.sun.jersey.api.client.Client;
-import com.sun.jersey.oauth.client.OAuthClientFilter;
-
 /*
  * This class has a lot of room for improvement mainly in terms of factorization (done quickly, a lot of code is a copy/paste of a previous one)
  */
@@ -44,7 +41,7 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
 
     protected static String token = null;
 
-    protected static final int TOKEN_DURATION_DEFAULT_SECONDS = 1800; // 30mn. SHOULD BE A CONFIG PARAMETER
+    protected static final int TOKEN_DURATION_DEFAULT_SECONDS = 1800;
 
     protected static int tokenDurationSeconds = -1;
 
@@ -52,22 +49,6 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
 
     public static final String LOCK = "Lock";
 
-    public static String DEFAULT_DATA_MODEL_RES_ID = null;
-
-    // API URLs: CURRENTLY POINTING TO V1.0 APIs
-    public static final String PROTOCOL = "https://";
-
-    public static final int XML = 0;
-
-    public static final int JSON = 1;
-
-    protected Client client;
-
-    protected OAuthClientFilter oauthFilter;
-
-    /*
-     * Most of this code was provided by SmartComm. Just adapted to use configuration parameters.
-     */
     @Override
     public String getToken() {
 
@@ -79,7 +60,8 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
     }
 
     /*
-     * Assume it is called form a synchronized code
+     * Assume it is called form a synchronized code.
+     * Most of this code comes from SmartComm.
      */
     protected void generateToken() {
 
@@ -116,24 +98,22 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
             throw new NuxeoException(msg);
         }
 
-        // TODO: should be a try-with-resource
+        List<BasicNameValuePair> parametersBody = new ArrayList<BasicNameValuePair>();
+
+        parametersBody.add(new BasicNameValuePair("grant_type", grantType));
+        parametersBody.add(new BasicNameValuePair("client_id", clientId));
+        parametersBody.add(new BasicNameValuePair("client_secret", clientSecret));
+        parametersBody.add(new BasicNameValuePair("username", username));
+        parametersBody.add(new BasicNameValuePair("password", password));
+
+        HttpPost post = null;
         try {
-            List<BasicNameValuePair> parametersBody = new ArrayList<BasicNameValuePair>();
-
-            parametersBody.add(new BasicNameValuePair("grant_type", grantType));
-            parametersBody.add(new BasicNameValuePair("client_id", clientId));
-            parametersBody.add(new BasicNameValuePair("client_secret", clientSecret));
-            parametersBody.add(new BasicNameValuePair("username", username));
-            parametersBody.add(new BasicNameValuePair("password", password));
-
-            // generate new token
-
             HttpClient client = HttpClients.custom()
                                            .setDefaultRequestConfig(
                                                    RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
                                            .build();
 
-            HttpPost post = new HttpPost(tokenServerUrl);
+            post = new HttpPost(tokenServerUrl);
 
             post.addHeader("Authorization", "Basic " + encodeCredentials(clientId, clientSecret));
             post.setHeader("Content-type", "application/x-www-form-urlencoded");
@@ -155,14 +135,14 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
                         "Getting token from SmartComm, Return Code: " + response.getStatusLine().getStatusCode());
             }
 
-            post.releaseConnection();
-
         } catch (ClientProtocolException e) {
-            e.printStackTrace();
+            throw new NuxeoException("Error getting a token from SmartComm", e);
         } catch (IOException e) {
-            e.printStackTrace();
+            throw new NuxeoException("Error getting a token from SmartComm", e);
         } finally {
-
+            if (post != null) {
+                post.releaseConnection();
+            }
         }
     }
 
@@ -178,9 +158,6 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
         return value;
     }
 
-    /*
-     * ToDo: Use try-with-resource
-     */
     @Override
     public JSONArray getTemplateList(String dataModelResId) {
 
@@ -424,7 +401,7 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
              * }
              * => We just need the "data" part, so going to documentEnvelope/envelopes/envelope/masterChannel/data
              */
-            System.out.print("\n" + obj.toString(4));
+            //System.out.print("\n" + obj.toString(4));
             JSONObject documentEnvelope = (JSONObject) obj.get("documentEnvelope");
             JSONObject envelopes = (JSONObject) documentEnvelope.getJSONObject("envelopes");
             JSONObject envelope = (JSONObject) envelopes.getJSONObject("envelope");

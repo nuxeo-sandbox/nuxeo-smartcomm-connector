@@ -1,9 +1,9 @@
 <?xml version="1.0"?>
 <component name="org.nuxeo.smartcomm.SmartCommService" version="1.0">
 
-    <implementation class="org.nuxeo.smartcomm.SmartCommServiceImpl"/>
+  <implementation class="org.nuxeo.smartcomm.SmartCommServiceImpl" />
 
-    <service>
-        <provide interface="org.nuxeo.smartcomm.SmartCommService"/>
-    </service>
+  <service>
+    <provide interface="org.nuxeo.smartcomm.SmartCommService" />
+  </service>
 </component>

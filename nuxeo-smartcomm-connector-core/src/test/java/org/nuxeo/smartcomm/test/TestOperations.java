@@ -21,14 +21,12 @@ package org.nuxeo.smartcomm.test;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
-import org.json.JSONObject;
 import org.junit.Assume;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.nuxeo.ecm.automation.AutomationService;
 import org.nuxeo.ecm.automation.OperationContext;
 import org.nuxeo.ecm.automation.OperationException;
-import org.nuxeo.ecm.automation.core.annotations.Context;
 import org.nuxeo.ecm.automation.test.AutomationFeature;
 import org.nuxeo.ecm.core.api.CoreSession;
 import org.nuxeo.ecm.core.test.DefaultRepositoryInit;
@@ -71,6 +69,7 @@ public class TestOperations {
     public void shouldGetTheTemplates() throws OperationException, Exception {
 
         Assume.assumeTrue("No configuration parameters found: No tests", TestUtils.hasConfigParameters());
+        System.out.println("Running shouldGetTheTemplates");
 
         OperationContext ctx = new OperationContext(session);
         Map<String, Object> params = new HashMap<>();
@@ -87,6 +86,7 @@ public class TestOperations {
     public void shouldGetTheTemplateDraft() throws OperationException, Exception {
 
         Assume.assumeTrue("No configuration parameters found: No tests", TestUtils.hasConfigParameters());
+        System.out.println("Running shouldGetTheTemplateDraft");
 
         String templateId = TestUtils.getFirstTemplateId(smartCommService);
         Assume.assumeTrue("No template found => No testGetTemplateDraft test", StringUtils.isNotBlank(templateId));
@@ -113,6 +113,7 @@ public class TestOperations {
     public void shouldFinalizeTheTemplate() throws OperationException, Exception {
 
         Assume.assumeTrue("No configuration parameters found: No tests", TestUtils.hasConfigParameters());
+        System.out.println("Running shouldFinalizeTheTemplate");
 
         String templateId = TestUtils.getFirstTemplateId(smartCommService);
         Assume.assumeTrue("No template found => No testGetTemplateDraft test", StringUtils.isNotBlank(templateId));
@@ -129,7 +130,7 @@ public class TestOperations {
         params.put("templateXML", xml);
         String html = (String) automationService.run(ctx, FinalizeSmartCommTemplate.ID, params);
         assertNotNull(html);
-        System.out.print("\n" + html);
+        //System.out.print("\n" + html);
 
         // Should parse the html etc. Just check we have our values for now
         // Check TestUtils.buildTemplateParameters for values to test
