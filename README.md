@@ -16,7 +16,7 @@ smartcom.auth.password=YOUR_PWD
 smartcom.auth.tokenServerUrl=THE_TOKEN_SERVER_URL
 ```
 
-Optionnal parameters:
+Optional parameters:
 
 * Default value is hard coded to 1800 (30 mn):
 
