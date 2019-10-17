@@ -1,6 +1,6 @@
 # nuxeo-smartcomm-connector
 
-This plugin is an example of integration with SmartComm and provides a couple of Operations to be sued to handle templates.
+This plugin is an example of integration with SmartComm and provides a couple of Operations to be used to handle templates.
 
 ## Configuration
 The plugin expects some configuration parameters:
@@ -20,19 +20,19 @@ Optionnal parameters:
 
 * Default value is hard coded to 1800 (30 mn):
 
-        smartcom.auth.tokenDUrationSeconds=THE_DURATION_IN_SECONDS`
+        smartcom.auth.tokenDUrationSeconds=THE_DURATION_IN_SECONDS
 
 * The Data Model Res ID (used to fetch template list):
 
-        smartcom.dataModelResID=THE_DATA_MODEL_RES_ID`
+        smartcom.dataModelResID=THE_DATA_MODEL_RES_ID
 
 * The project ID, to get the draft from:
 
-        smartcom.projectId=THE_PROJECT_ID`
+        smartcom.projectId=THE_PROJECT_ID
 
 * The Batch Config Res ID, to generate a draft form a temmplate ID:
 
-        smartcomm.batchConfigResId=THE_BATCH_CONF_RES_ID`
+        smartcomm.batchConfigResId=THE_BATCH_CONF_RES_ID
 
 
 ##### Getting a List of Templates
@@ -86,7 +86,7 @@ Usage is done via the following operations:
 * Template parameters:
   * **WARNING**: For first, quick implementation, these are specific to Nuxeo-SmartComm test environment. If we don't have time to do it, we recommand passing a map, or aproperty list, etc. instead
   * All these are string, opational, parameters
-  * `templateParamClaimNumber`, `templateParamClaimantName`, `templateParamLossDate` and `templateParamPolicyNumber`.   
+  * `templateParamClaimNumber`, `templateParamClaimantName`, `templateParamLossDate` and `templateParamPolicyNumber`.
 
 
 
