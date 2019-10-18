@@ -51,6 +51,8 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
 
     public static final String LOCK = "Lock";
 
+    public static final String DEFAULT_API_URL = "https://na10-sb.smartcommunications.cloud/one/oauth2/api/v6";
+
     @Override
     public String getToken() {
 
@@ -175,8 +177,7 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
                                                RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
                                        .build();
 
-        HttpPost post = new HttpPost(
-                "https://na10-sb.smartcommunications.cloud/one/oauth2/api/v6/correspondence/queryTemplate");
+        HttpPost post = new HttpPost(DEFAULT_API_URL + "/correspondence/queryTemplate");
 
         post.addHeader("Accept", "application/json"); // application/json or application/xml
         post.addHeader("Content-Type", "application/json"); // application/json or application/xml
@@ -206,9 +207,16 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
             // System.out.println("\nBody : \n" + EntityUtils.toString(response.getEntity()));
 
             String jsonStr = EntityUtils.toString(response.getEntity());
+            // From SmartComm documentation:
+            // ---------------------------------------
+            // JSON Hijacking Protection
+            // When returning JSON responses, Smart Communications will apply JSON Hijacking Protection. This takes
+            // the form of a prefix appended to each response:
+            // while(1);...
+            // The API client should remove this prefix before the JSON is parsed.
+            // ---------------------------------------
             if (jsonStr.indexOf("while(1);") == 0) {
-                // There certainly is a more elegant way of doing this than indexOf...
-                jsonStr = jsonStr.substring("while(1);".length());
+                jsonStr = jsonStr.substring(9); // "while(1);".length()
             }
             templateList = new JSONArray(jsonStr);
 
@@ -249,8 +257,7 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
                                                RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
                                        .build();
 
-        HttpPost post = new HttpPost(
-                "https://na10-sb.smartcommunications.cloud/one/oauth2/api/v6/job/generateDraft?includeDocumentData=true");
+        HttpPost post = new HttpPost(DEFAULT_API_URL + "/job/generateDraft?includeDocumentData=true");
 
         post.addHeader("Accept", "application/xml"); // application/json or application/xml
         post.addHeader("Content-Type", "application/json"); // application/json or application/xml
@@ -331,8 +338,7 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
                                                RequestConfig.custom().setCookieSpec(CookieSpecs.STANDARD).build())
                                        .build();
 
-        HttpPost post = new HttpPost(
-                "https://na10-sb.smartcommunications.cloud/one/oauth2/api/v6/job/finalizeDraft?includeDocumentData=true");
+        HttpPost post = new HttpPost(DEFAULT_API_URL + "/job/finalizeDraft?includeDocumentData=true");
 
         post.addHeader("Accept", "application/xml"); // application/json or application/xml
         post.addHeader("Content-Type", "application/json"); // application/json or application/xml
