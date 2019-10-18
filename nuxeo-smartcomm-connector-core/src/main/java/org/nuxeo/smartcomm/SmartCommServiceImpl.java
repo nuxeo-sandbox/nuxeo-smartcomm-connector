@@ -32,7 +32,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 /*
- * This class has a lot of room for improvement mainly in terms of factorization (done quickly, a lot of code is a copy/paste of a previous one)
+ * This class has a lot of room for improvement mainly in terms of factorization
+ * (quickly written), a lot of code is a copy/paste of a previous one). Also could
+ * better use Closeable objects for the Http connection etc. 
  */
 public class SmartCommServiceImpl extends DefaultComponent implements SmartCommService {
 
@@ -401,7 +403,8 @@ public class SmartCommServiceImpl extends DefaultComponent implements SmartCommS
              * }
              * => We just need the "data" part, so going to documentEnvelope/envelopes/envelope/masterChannel/data
              */
-            //System.out.print("\n" + obj.toString(4));
+
+            // System.out.print("\n" + obj.toString(4));
             JSONObject documentEnvelope = (JSONObject) obj.get("documentEnvelope");
             JSONObject envelopes = (JSONObject) documentEnvelope.getJSONObject("envelopes");
             JSONObject envelope = (JSONObject) envelopes.getJSONObject("envelope");
